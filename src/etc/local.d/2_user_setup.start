@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "setxkbmap de_CH &" > /home/develop/.xinitrc
+echo "exec xfce4-session" >> /home/develop/.xinitrc
+chown develop:develop /home/develop/.xinitrc

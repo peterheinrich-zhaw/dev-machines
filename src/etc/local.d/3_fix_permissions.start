@@ -1,0 +1,3 @@
+#!/bin/sh
+chown -R develop:develop /home/develop
+chown -R develop:develop /tmp

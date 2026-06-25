@@ -1,0 +1,51 @@
+   0 apk update && apk add --no-cache \
+   1     build-base \
+   2     cmake \
+   3     git \
+   4     python3 \
+   5     python3-dev \
+   6     bison \
+   7     flex \
+   8     readline-dev \
+   9     tcl-dev \
+  10     libffi-dev \
+  11     boost-dev \
+  12     eigen-dev \
+  13     libftdi1-dev \
+  14     pkgconf \
+        libunwind-dev
+
+  15 git clone https://github.com/YosysHQ/icestorm.git
+  16 cd icestorm/
+  17 make -j 4
+  18 make install
+  19 iceprog
+  20 cd ..
+
+  21 git clone https://github.com/YosysHQ/yosys.git
+  22 cd yosys/
+  28 cmake -B build . -DCMAKE_BUILD_TYPE=Release --fresh
+  29 cmake --build build --config Release --parallel 4
+  30 cmake --install build --strip
+  31 cd ..
+  32 git clone https://github.com/YosysHQ/nextpnr.git
+  33 cd nextpnr/
+
+  36 apk search libunwind
+  37 apk add 
+  42 cmake -B build . -DCMAKE_BUILD_TYPE=Release --fresh -DARCH=ice40 -DCMAKE_CXX_FLAGS="-U_FORTIFY_SOURCE"
+  43 cmake --build build --config Release --parallel 4
+  44 cmake --install build --strip
+
+
+sudo kextunload -b com.apple.driver.AppleUSBFTDI
+
+sudo qemu-system-aarch64 \
+  -M virt \
+  -cpu host \
+  -accel hvf \
+  -device qemu-xhci,id=usb-bus \
+  -device usb-host,bus=usb-bus.0,vendorid=0x0403,productid=0x6010 \
+  [your_other_vm_arguments...]
+
+sudo kextload -b com.apple.driver.AppleUSBFTDI

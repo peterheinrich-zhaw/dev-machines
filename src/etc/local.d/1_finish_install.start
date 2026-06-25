@@ -1,0 +1,35 @@
+#!/bin/sh
+
+trigger_firstboot=false
+
+if ! blkid /dev/vdb | grep -q "ext4"; then
+    mv /etc/apk/world /etc/apk/world.bak
+    apk add --no-cache e2fsprogs
+    mkfs.ext4 -F /dev/vdb
+    
+    mkdir -p /media/vdb
+    mount /dev/vdb /media/vdb
+    mkdir -p /media/vdb/cache
+    touch /media/vdb/cache/.boot_repository
+    cp -r /media/vdd/apks /media/vdb/
+    mv /etc/apk/world.bak /etc/apk/world
+    trigger_firstboot=true
+fi
+
+if ! blkid /dev/vdc | grep -q "ext4"; then
+    apk add e2fsprogs
+    mkfs.ext4 -F /dev/vdc
+    trigger_firstboot=true
+fi
+
+if ! blkid /dev/vdd | grep -q "ext4"; then
+    apk add e2fsprogs
+    mkfs.ext4 -F /dev/vdd
+    trigger_firstboot=true
+fi
+
+if [ "$trigger_firstboot" = true ]; then
+    chown develop:develop /home/develop
+    lbu commit -d
+    poweroff
+fi
